@@ -1,0 +1,29 @@
+version: '3'
+services:
+  stunnel:
+    build: .
+    container_name: stunnel_mirth
+    environment:
+      - STUNNEL_SERVICE=mirth
+      - STUNNEL_ACCEPT=636
+      - STUNNEL_CONNECT=mirth:8088
+      - STUNNEL_SERVICE2=mirth2
+      - STUNNEL_ACCEPT2=637
+      - STUNNEL_CONNECT2=mirth:8089
+    ports:
+      - 636:636
+      - 637:637
+    volumes:
+      - $PWD/cert-key.pem:/etc/stunnel/stunnel.key:ro
+      - $PWD/cert.pem:/etc/stunnel/stunnel.pem:ro
+    restart: always
+    networks:
+      ibox-network:
+        ipv4_address: 172.25.0.13
+networks:
+  ibox-network:
+    name: ibox-network
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.25.0.0/16"
